@@ -1,17 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 
-const SideBar = () => {
+const SideBar = ({ beds, setBeds, baths, setBaths, roomFacilities, setRoomFacilities, seats, setSeats, setOtherFacilities, otherFacilities, type, setType }) => {
 
 
     const filterRef = useRef(null)
 
     const [isOpen, setIsOpen] = useState(false)
-    const [beds, setBeds] = useState([])
-    const [baths, setBaths] = useState([])
-    const [seats, setSeats] = useState([])
-    const [type, setType] = useState([])
-    const [roomFacilities, setRoomFacilities] = useState([])
-    const [otherFacilities, setOtherFacilities] = useState([])
 
     const numOfBeds = [1, 2, 3, 4, 5, 6, 7]
     const numOfBaths = [1, 2, 3, 4, 5, 6]
@@ -19,6 +13,7 @@ const SideBar = () => {
     const numOfTypes = ['apartment', 'room', 'seat']
     const allRoomFacilities = ['bath', 'balcony']
     const allOtherFacilities = ['lift', 'garage']
+
 
     const handleBedFilter = num => {
         if (beds.includes(num)) {
@@ -70,6 +65,21 @@ const SideBar = () => {
         }
     }
 
+    const handleTypeFilter = type => {
+        if (type === 'room' || type === 'seat') {
+            setBaths('')
+            setBeds('')
+        }
+        if (type === 'apartment' || type === 'room') {
+            setSeats('')
+        }
+
+        if (type === 'apartment' || type === 'seat') {
+            setRoomFacilities('')
+        }
+        setType(t)
+    }
+
 
 
     useEffect(() => {
@@ -89,12 +99,12 @@ const SideBar = () => {
 
     return (
         <div className="capitalize">
-            <div className="bg-white h-screen lg:flex flex-col gap-5 hidden px-3">
+            <div className="bg-white min-h-screen lg:flex flex-col gap-5 hidden px-3 rounded-lg">
                 <h1 className="text-center text-2xl font-semibold pt-4">Filter</h1>
 
                 <div className="flex justify-between">
                     {
-                        numOfTypes.map(ty => <button key={ty} onClick={() => setType(ty)} className={type === ty ? "border-green-800 border bg-green-200 rounded-lg py-1 px-3" : "border-green-800 border rounded-lg py-1 px-3"}>
+                        numOfTypes.map(ty => <button key={ty} onClick={() => handleTypeFilter(ty)} className={type === ty ? "border-green-800 border bg-green-200 rounded-lg py-1 px-3" : "border-green-800 border rounded-lg py-1 px-3"}>
                             {ty}
                         </button>)
                     }
