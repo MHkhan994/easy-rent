@@ -1,5 +1,5 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { FaBeer } from 'react-icons/fa';
+import { FaBath, FaBed, FaBeer } from 'react-icons/fa';
 
 
 import "swiper/css";
@@ -7,11 +7,11 @@ import "swiper/css/navigation";
 import './PostCard.css';
 
 import { Navigation } from "swiper";
+import { useNavigate } from 'react-router-dom';
+
 const PostCard = ({ post }) => {
-
-    console.log(post);
-
-    const { title, img } = post
+    const navigate = useNavigate()
+    const { _id, title, img, rooms, bathrooms, rent } = post
 
 
     return (
@@ -30,8 +30,23 @@ const PostCard = ({ post }) => {
                     </SwiperSlide>)
                 }
             </Swiper>
-            <div className='p-3'>
-                <h1>{title}</h1>
+            <div onClick={() => navigate(`/post/${_id}`)} className='p-3 space-y-2 cursor-pointer'>
+                <h1 className='text-xl font-semibold line-clamp-2'>{title}</h1>
+                <p>BDT <span className='text-green-500'>{rent}</span>/ per month</p>
+                <div className='gap-4 flex'>
+                    {
+                        rooms !== 0 && <div className='flex gap-2 items-center'>
+                            <FaBed></FaBed>
+                            {rooms}
+                        </div>
+                    }
+                    {
+                        bathrooms !== 0 && <div className='flex gap-2 items-center'>
+                            <FaBath></FaBath>
+                            {bathrooms}
+                        </div>
+                    }
+                </div>
             </div>
         </div>
     );

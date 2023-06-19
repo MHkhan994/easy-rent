@@ -10,7 +10,7 @@ const SideBar = ({ beds, setBeds, baths, setBaths, roomFacilities, setRoomFacili
     const numOfBeds = [1, 2, 3, 4, 5, 6, 7]
     const numOfBaths = [1, 2, 3, 4, 5, 6]
     const numOfSeats = [1, 2, 3]
-    const numOfTypes = ['apartment', 'room', 'seat']
+    const numOfTypes = ['Apartment', 'Room', 'Seat']
     const allRoomFacilities = ['bath', 'balcony']
     const allOtherFacilities = ['lift', 'garage']
 
@@ -65,19 +65,33 @@ const SideBar = ({ beds, setBeds, baths, setBaths, roomFacilities, setRoomFacili
         }
     }
 
-    const handleTypeFilter = type => {
-        if (type === 'room' || type === 'seat') {
-            setBaths('')
-            setBeds('')
+    const handleTypeFilter = ty => {
+        if (type === ty) {
+            setType('')
         }
-        if (type === 'apartment' || type === 'room') {
-            setSeats('')
-        }
+        else {
+            if (ty === 'Room' || ty === 'Seat') {
+                setBaths('')
+                setBeds('')
+            }
+            if (ty === 'Apartment' || ty === 'Room') {
+                setSeats('')
+            }
 
-        if (type === 'apartment' || type === 'seat') {
-            setRoomFacilities('')
+            if (ty === 'Apartment' || ty === 'Seat') {
+                setRoomFacilities('')
+            }
+            setType(ty)
         }
-        setType(t)
+    }
+
+    const handleFilterReset = () => {
+        setType('')
+        setBaths('')
+        setBeds('')
+        setRoomFacilities('')
+        setOtherFacilities('')
+        setSeats('')
     }
 
 
@@ -114,7 +128,7 @@ const SideBar = ({ beds, setBeds, baths, setBaths, roomFacilities, setRoomFacili
 
                 {/*renders filters relevent to type apartment */}
                 {
-                    type === 'apartment' && <>
+                    type === 'Apartment' && <>
                         {/* filter beds */}
                         <div>
                             <h2 className="text-xl font-semibold py-2">Beds:</h2>
@@ -154,7 +168,7 @@ const SideBar = ({ beds, setBeds, baths, setBaths, roomFacilities, setRoomFacili
 
                 {/* renders filters relevent to room */}
                 {
-                    type === 'room' && <>
+                    type === 'Room' && <>
                         <div>
                             <h2 className="text-xl font-semibold py-2">Room Facilities:</h2>
                             <div className="flex gap-3 flex-wrap">
@@ -174,7 +188,7 @@ const SideBar = ({ beds, setBeds, baths, setBaths, roomFacilities, setRoomFacili
 
                 {/* renders filters relevent to room */}
                 {
-                    type === 'seat' && <>
+                    type === 'Seat' && <>
                         <div>
                             <h2 className="text-xl font-semibold py-2">seats:</h2>
                             <div className="flex gap-3 flex-wrap">
@@ -207,6 +221,10 @@ const SideBar = ({ beds, setBeds, baths, setBaths, roomFacilities, setRoomFacili
                             </div>
                         })}
                     </div>
+                </div>
+
+                <div className="flex justify-center">
+                    <button onClick={handleFilterReset} className="bg-green-600 px-5 py-2 text-white rounded-lg">Reset</button>
                 </div>
 
 

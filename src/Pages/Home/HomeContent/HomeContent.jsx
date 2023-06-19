@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import SideBar from "./SideBar";
 import axios from "axios";
 import PostCard from "./PostCard";
+import { useQuery } from "@tanstack/react-query";
 
 
 const HomeContent = () => {
 
-    const [posts, setPosts] = useState([])
 
     const [beds, setBeds] = useState('')
     const [baths, setBaths] = useState('')
@@ -15,14 +15,21 @@ const HomeContent = () => {
     const [roomFacilities, setRoomFacilities] = useState('')
     const [otherFacilities, setOtherFacilities] = useState('')
 
-    useEffect(() => {
-        axios.get('http://localhost:5000/posts')
-            .then(res => {
-                setPosts(res.data)
+    const { data: posts = [] } = useQuery({
+        queryKey: ['posts', type, beds, baths, otherFacilities],
+        queryFn: async () => {
+            const res = await axios.get('http://localhost:5000/posts', {
+                params: {
+                    type,
+                    beds,
+                    baths,
+                    otherFacilities
+                }
             })
-    }, [])
+            return res.data
+        }
+    })
 
-    console.log(posts);
 
     return (
         <div className="lg:grid grid-cols-[1fr_3fr] gap-10 relative transition-all">
@@ -42,10 +49,12 @@ const HomeContent = () => {
             ></SideBar>
 
 
-            <div className="min-h-screen grid lg:grid-cols-3 grid-cols-2 gap-4">
-                {
-                    posts.map(post => <PostCard key={post._id} post={post}></PostCard>)
-                }
+            <div>
+                <div className="grid lg:grid-cols-3 grid-cols-2 gap-4">
+                    {
+                        posts.map(post => <PostCard key={post._id} post={post}></PostCard>)
+                    }
+                </div>
             </div>
         </div>
     );

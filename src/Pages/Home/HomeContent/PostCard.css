@@ -2,7 +2,9 @@
 .swiper-button-prev,
 .swiper-button-next {
   width: 30px; 
-  height: 30px; 
+  height: 30px;
+  background: #ffffff; 
+  border-radius: 50%;
   opacity: 0;
   transition: all ease-in .3s;
 }
@@ -13,7 +15,7 @@
 
 .swiper-button-prev:after,
 .swiper-button-next:after {
-  font-size: 24px;
+  font-size: 14px;
   color: rgb(16, 177, 11);
 }
 
