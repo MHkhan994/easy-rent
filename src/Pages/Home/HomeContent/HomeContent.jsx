@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import SideBar from "./SideBar";
 import axios from "axios";
 import PostCard from "./PostCard";
@@ -7,33 +7,46 @@ import { useQuery } from "@tanstack/react-query";
 
 const HomeContent = () => {
 
-
     const [beds, setBeds] = useState('')
+    const [maxPrice, setMaxPrice] = useState()
+    const [minPrice, setMinPrice] = useState(0)
     const [baths, setBaths] = useState('')
     const [seats, setSeats] = useState('')
     const [type, setType] = useState('')
     const [roomFacilities, setRoomFacilities] = useState('')
     const [otherFacilities, setOtherFacilities] = useState('')
 
+    useEffect(() => {
+        axios.get('http://localhost:5000/posts/max-price')
+            .then(res => {
+                setMaxPrice(res.data.price)
+            })
+    }, [])
+
     const { data: posts = [] } = useQuery({
-        queryKey: ['posts', type, beds, baths, otherFacilities],
+        queryKey: ['posts', type, beds, baths, otherFacilities, maxPrice, minPrice],
         queryFn: async () => {
             const res = await axios.get('http://localhost:5000/posts', {
                 params: {
                     type,
                     beds,
                     baths,
-                    otherFacilities
+                    otherFacilities,
+                    maxPrice,
+                    minPrice
                 }
             })
             return res.data
         }
     })
 
+    console.log(maxPrice);
 
     return (
         <div className="lg:grid grid-cols-[1fr_3fr] gap-10 relative transition-all">
             <SideBar
+                minPrice={minPrice}
+                setMinPrice={setMinPrice}
                 beds={beds}
                 setBeds={setBeds}
                 baths={baths}
@@ -46,6 +59,8 @@ const HomeContent = () => {
                 setRoomFacilities={setRoomFacilities}
                 otherFacilities={otherFacilities}
                 setOtherFacilities={setOtherFacilities}
+                maxPrice={maxPrice}
+                setMaxPrice={setMaxPrice}
             ></SideBar>
 
 

@@ -1,5 +1,5 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { FaBath, FaBed, FaBeer } from 'react-icons/fa';
+import { FaBath, FaBed } from 'react-icons/fa';
 
 
 import "swiper/css";

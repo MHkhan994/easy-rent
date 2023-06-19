@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
+import { GrClose } from 'react-icons/gr';
 
-const SideBar = ({ beds, setBeds, baths, setBaths, roomFacilities, setRoomFacilities, seats, setSeats, setOtherFacilities, otherFacilities, type, setType }) => {
+const SideBar = ({ beds, setMinPrice, minPrice, setBeds, baths, setMaxPrice, maxPrice, setBaths, roomFacilities, setRoomFacilities, seats, setSeats, setOtherFacilities, otherFacilities, type, setType }) => {
 
 
     const filterRef = useRef(null)
@@ -92,8 +93,34 @@ const SideBar = ({ beds, setBeds, baths, setBaths, roomFacilities, setRoomFacili
         setRoomFacilities('')
         setOtherFacilities('')
         setSeats('')
+        setIsOpen(false)
+        setMaxPrice(maxPrice)
     }
 
+
+    function validateMinInput(event) {
+        const input = event.target;
+        const key = event.key;
+
+        // Check if the minus sign is typed as the first character
+        if (key === "-") {
+            event.preventDefault();
+        }
+
+        setMinPrice(input.value)
+    }
+
+    function validateMaxInput(event) {
+        const input = event.target;
+        const key = event.key;
+
+        // Check if the minus sign is typed as the first character
+        if (key === "-") {
+            event.preventDefault();
+        }
+
+        setMaxPrice(input.value)
+    }
 
 
     useEffect(() => {
@@ -111,176 +138,148 @@ const SideBar = ({ beds, setBeds, baths, setBaths, roomFacilities, setRoomFacili
     }, []);
 
 
-    return (
-        <div className="capitalize">
-            <div className="bg-white min-h-screen lg:flex flex-col gap-5 hidden px-3 rounded-lg">
-                <h1 className="text-center text-2xl font-semibold pt-4">Filter</h1>
-
-                <div className="flex justify-between">
-                    {
-                        numOfTypes.map(ty => <button key={ty} onClick={() => handleTypeFilter(ty)} className={type === ty ? "border-green-800 border bg-green-200 rounded-lg py-1 px-3" : "border-green-800 border rounded-lg py-1 px-3"}>
-                            {ty}
-                        </button>)
-                    }
+    // --------------------------------------------------filter div---------------------------------
+    const filters = <div className="flex flex-col gap-3">
+        <h1 className="text-center text-2xl font-semibold pt-4 hidden lg:block">Filter</h1>
+        <div>
+            <h2 className="text-xl font-semibold py-2">Price:</h2>
+            <div className="ps-4 pb-2">
+                <div className="flex flex-col gap-1">
+                    <label className="label">
+                        <span className="text-md font-semibold">Min</span>
+                    </label>
+                    <input onChange={validateMinInput} type="number" min={0} max={maxPrice} defaultValue={0} className="h-10 px-3 border" />
                 </div>
-
-
-
-                {/*renders filters relevent to type apartment */}
+                <div className="flex flex-col gap-2">
+                    <label className="label">
+                        <span className="text-md font-semibold">Max</span>
+                    </label>
+                    <input onChange={validateMaxInput} type="number" min={0} max={maxPrice} defaultValue={maxPrice} className="h-10 px-3 border" />
+                </div>
+            </div>
+        </div>
+        <div className="flex flex-col">
+            <h2 className="text-xl font-semibold py-2">Type:</h2>
+            <div className="space-x-2">
                 {
-                    type === 'Apartment' && <>
-                        {/* filter beds */}
-                        <div>
-                            <h2 className="text-xl font-semibold py-2">Beds:</h2>
-                            <div className="flex gap-3 flex-wrap">
-                                {numOfBeds.map(num => {
-                                    return <div key={num}>
-                                        <button
-                                            onClick={() => handleBedFilter(num)}
-                                            className={beds.includes(num) ? "border border-green-700 bg-green-200 rounded-xl px-5 py-2" : "border rounded-xl px-5 py-2"}>
-
-                                            {num !== 7 ? num : `${num}+`}
-                                        </button>
-                                    </div>
-                                })}
-                            </div>
-                        </div>
-
-                        {/* filter baths */}
-                        <div>
-                            <h2 className="text-xl font-semibold py-2">Baths:</h2>
-                            <div className="flex gap-3 flex-wrap">
-                                {numOfBaths.map(num => {
-                                    return <div key={num}>
-                                        <button
-                                            onClick={() => handleBathFilter(num)}
-                                            className={baths.includes(num) ? "border border-green-700 bg-green-200 rounded-xl px-5 py-2" : "border rounded-xl px-5 py-2"}>
-
-                                            {num !== 6 ? num : `${num}+`}
-                                        </button>
-                                    </div>
-                                })}
-                            </div>
-                        </div>
-                    </>
+                    numOfTypes.map(ty => <button key={ty} onClick={() => handleTypeFilter(ty)} className={type === ty ? "border-green-800 border bg-green-200 rounded-lg py-1 px-3" : "border-green-800 border rounded-lg py-1 px-3"}>
+                        {ty}
+                    </button>)
                 }
-
-
-                {/* renders filters relevent to room */}
-                {
-                    type === 'Room' && <>
-                        <div>
-                            <h2 className="text-xl font-semibold py-2">Room Facilities:</h2>
-                            <div className="flex gap-3 flex-wrap">
-                                {allRoomFacilities.map(num => {
-                                    return <div key={num}>
-                                        <button
-                                            onClick={() => handleRoomFilter(num)}
-                                            className={roomFacilities.includes(num) ? "border border-green-700 bg-green-200 rounded-xl px-5 py-2" : "border rounded-xl px-5 py-2"}>
-                                            {num !== 6 ? num : `${num}+`}
-                                        </button>
-                                    </div>
-                                })}
-                            </div>
-                        </div>
-                    </>
-                }
-
-                {/* renders filters relevent to room */}
-                {
-                    type === 'Seat' && <>
-                        <div>
-                            <h2 className="text-xl font-semibold py-2">seats:</h2>
-                            <div className="flex gap-3 flex-wrap">
-                                {numOfSeats.map(num => {
-                                    return <div key={num}>
-                                        <button
-                                            onClick={() => handleSeatFilter(num)}
-                                            className={seats.includes(num) ? "border border-green-700 bg-green-200 rounded-xl px-5 py-2" : "border rounded-xl px-5 py-2"}>
-                                            {num !== 3 ? num : `${num}+`}
-                                        </button>
-                                    </div>
-                                })}
-                            </div>
-                        </div>
-                    </>
-                }
-
-
-                {/* renders filters relevent to other facilities */}
+            </div>
+        </div>
+        {/*renders filters relevent to type apartment */}
+        {
+            type === 'Apartment' && <>
+                {/* filter beds */}
                 <div>
-                    <h2 className="text-xl font-semibold py-2">Other Facilities:</h2>
+                    <h2 className="text-xl font-semibold py-2">Beds:</h2>
                     <div className="flex gap-3 flex-wrap">
-                        {allOtherFacilities.map(facility => {
-                            return <div key={facility}>
+                        {numOfBeds.map(num => {
+                            return <div key={num}>
                                 <button
-                                    onClick={() => handleFacilityFilter(facility)}
-                                    className={otherFacilities.includes(facility) ? "border border-green-700 bg-green-200 rounded-xl px-5 py-2" : "border rounded-xl px-5 py-2"}>
-                                    {facility !== 3 ? facility : `${facility}+`}
+                                    onClick={() => handleBedFilter(num)}
+                                    className={beds.includes(num) ? "border border-green-700 bg-green-200 rounded-xl px-5 py-2" : "border rounded-xl px-5 py-2"}>
+                                    {num !== 7 ? num : `${num}+`}
                                 </button>
                             </div>
                         })}
                     </div>
                 </div>
-
-                <div className="flex justify-center">
-                    <button onClick={handleFilterReset} className="bg-green-600 px-5 py-2 text-white rounded-lg">Reset</button>
+                {/* filter baths */}
+                <div>
+                    <h2 className="text-xl font-semibold py-2">Baths:</h2>
+                    <div className="flex gap-3 flex-wrap">
+                        {numOfBaths.map(num => {
+                            return <div key={num}>
+                                <button
+                                    onClick={() => handleBathFilter(num)}
+                                    className={baths.includes(num) ? "border border-green-700 bg-green-200 rounded-xl px-5 py-2" : "border rounded-xl px-5 py-2"}>
+                                    {num !== 6 ? num : `${num}+`}
+                                </button>
+                            </div>
+                        })}
+                    </div>
                 </div>
-
-
+            </>
+        }
+        {/* renders filters relevent to room */}
+        {
+            type === 'Room' && <>
+                <div>
+                    <h2 className="text-xl font-semibold py-2">Room Facilities:</h2>
+                    <div className="flex gap-3 flex-wrap">
+                        {allRoomFacilities.map(num => {
+                            return <div key={num}>
+                                <button
+                                    onClick={() => handleRoomFilter(num)}
+                                    className={roomFacilities.includes(num) ? "border border-green-700 bg-green-200 rounded-xl px-5 py-2" : "border rounded-xl px-5 py-2"}>
+                                    {num !== 6 ? num : `${num}+`}
+                                </button>
+                            </div>
+                        })}
+                    </div>
+                </div>
+            </>
+        }
+        {/* renders filters relevent to room */}
+        {
+            type === 'Seat' && <>
+                <div>
+                    <h2 className="text-xl font-semibold py-2">seats:</h2>
+                    <div className="flex gap-3 flex-wrap">
+                        {numOfSeats.map(num => {
+                            return <div key={num}>
+                                <button
+                                    onClick={() => handleSeatFilter(num)}
+                                    className={seats.includes(num) ? "border border-green-700 bg-green-200 rounded-xl px-5 py-2" : "border rounded-xl px-5 py-2"}>
+                                    {num !== 3 ? num : `${num}+`}
+                                </button>
+                            </div>
+                        })}
+                    </div>
+                </div>
+            </>
+        }
+        {/* renders filters relevent to other facilities */}
+        <div>
+            <h2 className="text-xl font-semibold py-2">Other Facilities:</h2>
+            <div className="flex gap-3 flex-wrap">
+                {allOtherFacilities.map(facility => {
+                    return <div key={facility}>
+                        <button
+                            onClick={() => handleFacilityFilter(facility)}
+                            className={otherFacilities.includes(facility) ? "border border-green-700 bg-green-200 rounded-xl px-5 py-2" : "border rounded-xl px-5 py-2"}>
+                            {facility !== 3 ? facility : `${facility}+`}
+                        </button>
+                    </div>
+                })}
             </div>
+        </div>
+        <div className="flex justify-center">
+            <button onClick={handleFilterReset} className="bg-green-600 px-5 py-2 text-white rounded-lg">Reset</button>
+        </div>
+    </div>
 
 
-
-
-
-
-
-
-
-
-
-
-
+    return (
+        <div className="capitalize">
+            <div className="bg-white min-h-screen lg:flex flex-col hidden px-3 rounded-lg">
+                {filters}
+            </div>
 
             {/* phone */}
             <div ref={filterRef} className="flex lg:hidden relative transition-all bg-gray-100">
-                <button onClick={() => setIsOpen(true)} className="bg-white shadow-sm border px-5 py-2">filter</button>
+                <button onClick={() => setIsOpen(!isOpen)} className="bg-white shadow-sm border mb-2 px-5 py-2">filter</button>
                 {
-                    isOpen && <div className="bg-blue-200 w-full absolute left-0 z-20 top-10 p-4">
-                        <button onClick={() => setIsOpen(false)}>
-                            close
-                        </button>
-                        <div>
-                            <h2 className="text-xl font-semibold py-2">Beds:</h2>
-                            <div className="flex gap-3 flex-wrap">
-                                {numOfBeds.map(num => {
-                                    return <div key={num}>
-                                        <button
-                                            onClick={() => handleBedFilter(num)}
-                                            className={beds.includes(num) ? "border border-green-700 bg-green-200 rounded-xl px-5 py-2" : "border rounded-xl px-5 py-2"}>
-
-                                            {num !== 7 ? num : `${num}+`}
-                                        </button>
-                                    </div>
-                                })}
-                            </div>
+                    isOpen && <div className="bg-white w-full absolute left-0 z-20 top-10 p-4">
+                        <div className="flex justify-end">
+                            <button onClick={() => setIsOpen(false)}>
+                                <GrClose></GrClose>
+                            </button>
                         </div>
-                        <div>
-                            <h2 className="text-xl font-semibold py-2">Baths:</h2>
-                            <div className="flex gap-3 flex-wrap">
-                                {numOfBaths.map(num => {
-                                    return <div key={num}>
-                                        <button
-                                            onClick={() => handleBathFilter(num)}
-                                            className={baths.includes(num) ? "border border-green-700 bg-green-200 rounded-xl px-5 py-2" : "border rounded-xl px-5 py-2"}>
 
-                                            {num !== 7 ? num : `${num}+`}
-                                        </button>
-                                    </div>
-                                })}
-                            </div>
-                        </div>
+                        {filters}
                     </div>
                 }
             </div>
